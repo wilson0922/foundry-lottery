@@ -1,14 +1,33 @@
-# Compiler files
-cache/
+# Ignore build artifacts
 out/
+artifacts/
+cache/
+*.sol.json
+
+# Ignore Forge and Foundry config files
+.forge
+.forge-sh
 
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
 /broadcast/**/dry-run/
 
+# Ignore dependency manager files
+lib/
+lib/.cache
+lib/.forge
+lib/**/.git
+lib/**/.forge-sh
+
 # Docs
 docs/
 
 # Dotenv file
 .env
+
+
+# Ignore node_modules (if using npm/yarn for additional tooling)
+node_modules/
+package-lock.json
+yarn.lock
