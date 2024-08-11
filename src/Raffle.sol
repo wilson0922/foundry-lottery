@@ -34,6 +34,12 @@ contract Raffle {
     error Raffle_NotEnoughEth();
 
     uint256 private immutable i_entranceFee;
+    address payable[] private s_players;
+
+    // Events
+    event RaffleEntered(
+        address indexed player
+    );
 
     constructor(uint256 entranceFee){
         i_entranceFee=entranceFee;
@@ -41,10 +47,12 @@ contract Raffle {
     function  enterRaffle() public payable{
         // require(msg.value<i_entranceFee,'Not enough ETH sent');
         // require(msg.value<i_entranceFee,Raffle_NotEnoughEth()); in v0.8.26 and need IR to compile
-        
+
         if(msg.value<i_entranceFee){
             revert Raffle_NotEnoughEth();
         }
+        s_players.push(payable(msg.sender));
+        emit RaffleEntered(msg.sender);
     }
 
     function  pickWinner() public {}
@@ -52,5 +60,9 @@ contract Raffle {
     // getters
     function getEentranceFee() external view returns (uint256){
         return i_entranceFee;
+    }
+
+    function getPlayers(uint256 index) external view returns(address) {
+        return s_players[index];
     }
 }
