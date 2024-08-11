@@ -34,17 +34,21 @@ contract Raffle {
     error Raffle_NotEnoughEth();
 
     uint256 private immutable i_entranceFee;
+    uint256 private immutable i_interval; // the duration of the lottery in seconds
     address payable[] private s_players;
+    uint256 private s_lastTimeStamp;
 
     // Events
     event RaffleEntered(
         address indexed player
     );
 
-    constructor(uint256 entranceFee){
+    constructor(uint256 entranceFee, uint256 interval){
         i_entranceFee=entranceFee;
+        i_interval=interval;
+        s_lastTimeStamp=block.timestamp;
     }
-    function  enterRaffle() public payable{
+    function  enterRaffle() external payable{
         // require(msg.value<i_entranceFee,'Not enough ETH sent');
         // require(msg.value<i_entranceFee,Raffle_NotEnoughEth()); in v0.8.26 and need IR to compile
 
@@ -55,7 +59,16 @@ contract Raffle {
         emit RaffleEntered(msg.sender);
     }
 
-    function  pickWinner() public {}
+    function  pickWinner() external {
+        // 1. get a random number
+        // 2. user the random number to pick a player
+        // 3. be automatically called
+
+        // check if enough time has passed
+        if(block.timestamp-s_lastTimeStamp<i_interval){
+            revert();
+        }
+    }
 
     // getters
     function getEentranceFee() external view returns (uint256){
