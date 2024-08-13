@@ -34,16 +34,20 @@ import {VRFV2PlusClient} from "lib/chainlink-brownie-contracts/contracts/src/v0.
 abstract contract Raffle is VRFConsumerBaseV2Plus{
     // Errors
     error Raffle_NotEnoughEth();
+    error Raffle_TransferFailed();
 
     uint16 private constant REQUEST_CONFIRMATIONS=3;
     uint32 private constant NUM_WORDS=1;
+
     uint256 private immutable i_entranceFee;
     uint256 private immutable i_interval; // the duration of the lottery in seconds
     bytes32 private immutable i_keyHash;
     uint256 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
+
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
+    address private s_recentWinner;
 
     // Events
     event RaffleEntered(address indexed player);
@@ -103,7 +107,19 @@ abstract contract Raffle is VRFConsumerBaseV2Plus{
         
     }
 
-    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal virtual override;
+    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal virtual override{
+        // s_player =10
+        // rng = 12 (actually 74014580145687014514567151)
+        // 12 % 10 = 2 
+        uint256 indexeOfWinner=randomWords[0] % s_players.length;
+        address payable recentWinner=s_players[indexeOfWinner];
+        s_recentWinner=recentWinner;
+        (bool success,) = recentWinner.call{value: address(this).balance}("");
+        if(!success){
+            revert Raffle_TransferFailed();
+        }
+
+    }
 
     // getters
     function getEentranceFee() external view returns (uint256) {
