@@ -42,6 +42,7 @@ abstract contract Raffle is VRFConsumerBaseV2Plus{
     error Raffle_NotEnoughEth();
     error Raffle_TransferFailed();
     error Raffle_RaffleNotOpen();
+    error Raffle_UpkeepNeeded(uint256 balance, uint256 playLength, uint256 raffleState);
 
     // State variables
     uint16 private constant REQUEST_CONFIRMATIONS=3;
@@ -118,9 +119,9 @@ abstract contract Raffle is VRFConsumerBaseV2Plus{
         // check if enough time has passed
         (bool upkeepNeeded,)=checkUpkeep("");
         if (!upkeepNeeded) {
-            revert();
+            revert Raffle_UpkeepNeeded(address(this).balance,s_players.length,uint256(s_raffleState));
         }
-        
+
         s_raffleState= RaffleState.CALCULATING;
 
         // get our random number 2.5
@@ -142,14 +143,14 @@ abstract contract Raffle is VRFConsumerBaseV2Plus{
                 )
             });
 
-            uint256 requestId = s_vrfCoordinator.requestRandomWords(
+            s_vrfCoordinator.requestRandomWords(
             request
         );
         
     }
 
     // functions methodology- CEI: Checks, Effects, Interactions pattern
-    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal virtual override{
+    function fulfillRandomWords(uint256 /*requestId*/, uint256[] calldata randomWords) internal virtual override{
         // Checks
         // s_player =10
         // rng = 12 (actually 74014580145687014514567151)
