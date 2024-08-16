@@ -31,7 +31,7 @@ import {VRFV2PlusClient} from "lib/chainlink-brownie-contracts/contracts/src/v0.
  * @notice This contract is for creating a sample raffle contract
  * @dev Implements Chainlink VRFv2.5
  */
-abstract contract Raffle is VRFConsumerBaseV2Plus {
+contract Raffle is VRFConsumerBaseV2Plus {
     // Type declaration
     enum RaffleState {
         OPEN, // 0
@@ -61,7 +61,7 @@ abstract contract Raffle is VRFConsumerBaseV2Plus {
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
     address private s_recentWinner;
-    RaffleState private s_raffleState;
+    RaffleState private s_raffleState; // start as OPEN
 
     // Events
     event RaffleEntered(address indexed player);
@@ -194,5 +194,9 @@ abstract contract Raffle is VRFConsumerBaseV2Plus {
 
     function getPlayers(uint256 index) external view returns (address) {
         return s_players[index];
+    }
+
+    function getRaffleState() external view returns (RaffleState) {
+        return s_raffleState;
     }
 }
