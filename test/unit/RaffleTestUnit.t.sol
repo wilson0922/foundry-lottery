@@ -89,6 +89,7 @@ contract RaffleTestUnit is Test {
         raffle.enterRaffle{value: entranceFee}();
     }
 
+    // CHECK UPKEEP
     function testNoBalanceUpkeepReturnFalse() public {
         // arrange
         vm.warp(block.timestamp + interval + 1);
@@ -114,5 +115,41 @@ contract RaffleTestUnit is Test {
 
         // assert
         assert(!upkeepNeeded);
+    }
+
+    // PERFORM UPKEEP
+
+    function testPerformUpkeepCanRunIfCheckUpkeepTrue() public {
+        // arrange
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval + 1);
+        vm.roll(block.number + 1);
+
+        // act/ assert
+        raffle.performUpkeep("");
+    }
+
+    function testPerformUpkeepRevertsIfCheckUpkeepFalse() public {
+        // arrange
+        uint256 currentBalance;
+        uint256  numPlayers;
+        Raffle.RaffleState rstate = raffle.getRaffleState();
+
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+        currentBalance = address(raffle).balance;
+        numPlayers = raffle.getPlayerLength();
+
+        // act/ assert
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                Raffle.Raffle_UpkeepNeeded.selector,
+                currentBalance,
+                numPlayers,
+                rstate
+            )
+        );
+        raffle.performUpkeep("");
     }
 }
