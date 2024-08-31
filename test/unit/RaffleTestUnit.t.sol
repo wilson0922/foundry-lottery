@@ -7,8 +7,9 @@ import {Raffle} from "../../src/Raffle.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 import {Vm} from "lib/forge-std/src/Vm.sol";
 import {VRFCoordinatorV2_5Mock} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
+import {CodeConstants} from "script/HelperConfig.s.sol";
 
-contract RaffleTestUnit is Test {
+contract RaffleTestUnit is Test,CodeConstants {
     Raffle public raffle;
     HelperConfig public helperConfig;
 
@@ -34,7 +35,7 @@ contract RaffleTestUnit is Test {
     }
 
     modifier skipFork() {
-        if(block.chainid != 31337) return;
+        if(block.chainid != LOCAL_CHAIN_ID) return;
         _;
     }
 
