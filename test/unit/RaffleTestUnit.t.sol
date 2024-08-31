@@ -33,6 +33,11 @@ contract RaffleTestUnit is Test {
         _;
     }
 
+    modifier skipFork() {
+        if(block.chainid != 31337) return;
+        _;
+    }
+
     function setUp() external {
         DeployRaffle deployer = new DeployRaffle();
 
@@ -177,7 +182,7 @@ contract RaffleTestUnit is Test {
         uint256 randomRequestId
     ) public raffleEntered {
         // arrange/ act/ assert
-        vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
+        vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector); // when running on fork: vm.expectRevert()
         VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(
             randomRequestId,
             address(raffle)
@@ -186,6 +191,7 @@ contract RaffleTestUnit is Test {
 
     function testFulfillrandomWordsPicksWinnerResetsAndSendMoney()
         public
+        skipFork
         raffleEntered
     {
         // arrange

@@ -26,6 +26,7 @@ contract HelperConfig is Script, CodeConstants {
         uint256 subscriptionId;
         uint32 callbackGasLimit;
         address link;
+        address account;
     }
 
     NetworkConfig public localNetworkConfig;
@@ -58,9 +59,10 @@ contract HelperConfig is Script, CodeConstants {
                 interval: 30, // 30 sec
                 vrfCoordinator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
                 gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
-                subscriptionId: 0, // need to fill in, if test on sepolia
+                subscriptionId: 31501490907850406204901044560589943556443818813179589648778924096713985005541, // need to fill in, if test on sepolia
                 callbackGasLimit: 500000, // 500,000gas
-                link:0x779877A7B0D9E8603169DdbD7836e478b4624789
+                link:0x779877A7B0D9E8603169DdbD7836e478b4624789,
+                account: 0xe15d824203CB75fb36820fdEF65F7c829B6AEe57
             });
     }
 
@@ -87,7 +89,8 @@ contract HelperConfig is Script, CodeConstants {
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             subscriptionId: 0, // might have to fix this
             callbackGasLimit: 500000, // 500,000gas
-            link:address(linkToken)
+            link:address(linkToken),
+            account:0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38
         });
 
         return localNetworkConfig;
