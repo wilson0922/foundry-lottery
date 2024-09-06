@@ -33,18 +33,18 @@ import {console} from "lib/forge-std/src/console.sol";
  * @dev Implements Chainlink VRFv2.5
  */
 contract Raffle is VRFConsumerBaseV2Plus {
+    // Errors
+    error Raffle_NotEnoughEth();
+    error Raffle_TransferFailed();
+    error Raffle_RaffleNotOpen();
+    error Raffle_UpkeepNeeded(uint256 balance, uint256 playLength, uint256 raffleState);
+
     // Type declaration
     enum RaffleState {
         OPEN, // 0
         CALCULATING // 1
 
     }
-
-    // Errors
-    error Raffle_NotEnoughEth();
-    error Raffle_TransferFailed();
-    error Raffle_RaffleNotOpen();
-    error Raffle_UpkeepNeeded(uint256 balance, uint256 playLength, uint256 raffleState);
 
     // State variables
     uint16 private constant REQUEST_CONFIRMATIONS = 3;

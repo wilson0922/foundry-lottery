@@ -127,6 +127,18 @@ contract RaffleTestUnit is Test, CodeConstants {
         assert(!upkeepNeeded);
     }
 
+    function testCheckUpkeepReturnsFalseIfTimeNotEnough() public {
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+        (bool upkeepNeeded,) = raffle.checkUpkeep("");
+        assert(!upkeepNeeded);
+    }
+
+    function testCheckUpkeepReturnsWhenParamsAllTrue() public raffleEntered {
+        (bool upkeepNeeded,) = raffle.checkUpkeep("");
+        assert(upkeepNeeded);
+    }
+
     // PERFORM UPKEEP
 
     function testPerformUpkeepCanRunIfCheckUpkeepTrue() public raffleEntered {

@@ -2,5 +2,6 @@
     "search.exclude": {
         "**/node_modules": false
     },
-    "search.useGlobalIgnoreFiles": true
+    "search.useGlobalIgnoreFiles": true,
+    "makefile.configureOnOpen": false
 }
